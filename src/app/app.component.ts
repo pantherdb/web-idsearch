@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
     let ids = mapids.split("\n");
     let params = [];
     for(let id of ids) {
-      params.push({ query_string: id, taxon_id: this.selected_taxon.value, });
+      params.push({ query_string: id, taxon_id: this.selected_taxon.value });
     }
 
     this.idsearch.multipleSearch(params)
