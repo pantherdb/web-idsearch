@@ -1,20 +1,71 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<h1>ID Mapping Examples</h1>
+Elastic Search Server Address: <a href="{{ this.idsearch.url }}" target="blank"><i>{{ this.idsearch.url }}</i></a>
 
+
+<mat-tab-group style="margin-top: 2rem">
+
+  <mat-tab label="AutoComplete">
+
+    <div style="width:60%; margin: auto">
+      <h2>Autocomplete</h2>
+      <form>
+        <mat-form-field class="example-full-width">
+          <input type="text" placeholder="Search a Gene ID" matInput [matAutocomplete]="auto" (input)="onSearchChange($event.target.value)">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of ($options | async)?.hits.hits" [value]="option._source.Gene_Name">
+              {{option._source.taxon + " | " + option._source.Gene_Name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+    </div>
+
+  </mat-tab>
+
+  <mat-tab label="Multiple IDs Mapping">
+
+    <div style="width:60%; margin: auto">
+
+      <h2>Multiple IDs Mapping</h2>
+      <form style="border: 1px solid black; border-radius: 5px; padding: 15px;">
+        <textarea #mapids rows=5 cols=20 style="display:block; width:100%;"></textarea>
+        <mat-form-field>
+          <mat-select placeholder="Taxon" (selectionChange)="changeTaxon($event.value)">
+            <mat-option *ngFor="let taxon of taxons" [value]="taxon">
+              {{taxon.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button (click)='map(mapids.value)'>Map</button>
+        <button (click)='mappedIds = null'>Reset</button>
+      </form>
+
+      <!-- DISPLAYED WHEN RESULTS ARE COMING IN -->
+      <div *ngIf="mappedIds" style="margin-top:2rem">
+        {{ nbMapped() }} mapped ids / {{ mappedIds.length }}
+        <table style="border: 1px solid black;
+                          border-radius: 5px;
+                          padding: 15px; width: 100%">
+          <tr style="background-color: cornflowerblue; color:white">
+            <th style="border: 1px solid black;">User ID</th>
+            <th style="border: 1px solid black;">Mapped Gene Name</th>
+            <th style="border: 1px solid black;">Mapped Taxon</th>
+            <th style="border: 1px solid black;">Mapped UniprotKB</th>
+            <th style="border: 1px solid black;">E.S. Doc</th>
+          </tr>
+          <tr *ngFor="let result of mappedIds">
+            <td style="padding: 15px;">{{ result.original }}</td>
+            <td style="padding: 15px;">{{ result.mapped?._source.Gene_Name | json }}</td>
+            <td style="padding: 15px;">{{ result.mapped?._source.taxon | json }}</td>
+            <td style="padding: 15px;">{{ result.mapped?._source["UniProtKB-ID"] | json }}</td>
+            <td style="padding: 15px;" *ngIf="result.mapped"><a href="{{ this.idsearch.url + '/id/mapping/_search?q=_id:' + result.mapped._id }}" target="blank">doc</a></td>
+            <td style="padding: 15px;" *ngIf="!result.mapped">-</td>
+          </tr>
+
+        </table>
+      </div>
+
+    </div>
+
+  </mat-tab>
+</mat-tab-group>
