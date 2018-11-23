@@ -32,7 +32,7 @@ export class IdsearchService {
                "{ \"id\": \"t_search_key_taxon\", \"params\": { \"query_string\": \"" + param.query_string + "\", \"taxon_id\": " + param.taxon_id + "} }\n"
     }
     
-    console.log("idsearch: ", query);
+//    console.log("idsearch: ", query);
 
     const httpOptions = {
       headers: new HttpHeaders({

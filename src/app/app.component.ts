@@ -58,7 +58,7 @@ export class AppComponent implements OnInit {
     .subscribe(data => {
       this.mappedIds = [];
       for(let i = 0; i < data.responses.length; i++) {
-        console.log({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
+//        console.log({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
         // we know that we'll have only 1 hit / query
         this.mappedIds.push({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
       }
