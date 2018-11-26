@@ -6,14 +6,19 @@ Elastic Search Server Address: <a href="{{ this.idsearch.url }}" target="blank">
 
   <mat-tab label="AutoComplete">
 
-    <div style="width:60%; margin: auto">
+    <div style="width:80%; margin: auto">
       <h2>Autocomplete</h2>
       <form>
         <mat-form-field class="example-full-width">
           <input type="text" placeholder="Search a Gene ID" matInput [matAutocomplete]="auto" (input)="onSearchChange($event.target.value)">
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let option of ($options | async)?.hits.hits" [value]="option._source.Gene_Name">
-              {{option._source.taxon + " | " + option._source.Gene_Name}}
+            <mat-option *ngFor="let option of ($options | async)?.hits.hits" [value]="option._id">
+              <div style="width:100%">
+                <span style="display: inline-block; text-align: left; min-width:25%">{{option._source.Gene_Name ? option._source.Gene_Name : "N/A"}}</span>
+                <span style="display: inline-block; text-align: left; min-width:25%">{{option._id}}</span>
+                <span style="display: inline-block; text-align: center; min-width:25%">{{option._source["UniProtKB-ID"]}}</span>
+                <span style="display: inline-block; text-align: right; min-width:25%">{{option._source["NCBI_TaxID"]}}</span>
+              </div>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -24,7 +29,7 @@ Elastic Search Server Address: <a href="{{ this.idsearch.url }}" target="blank">
 
   <mat-tab label="Multiple IDs Mapping">
 
-    <div style="width:60%; margin: auto">
+    <div style="width:80%; margin: auto">
 
       <h2>Multiple IDs Mapping</h2>
       <form style="border: 1px solid black; border-radius: 5px; padding: 15px;">
@@ -48,18 +53,20 @@ Elastic Search Server Address: <a href="{{ this.idsearch.url }}" target="blank">
                           padding: 15px; width: 100%">
           <tr style="background-color: cornflowerblue; color:white">
             <th style="border: 1px solid black;">User ID</th>
-            <th style="border: 1px solid black;">Mapped Gene Name</th>
-            <th style="border: 1px solid black;">Mapped Taxon</th>
-            <th style="border: 1px solid black;">Mapped UniprotKB</th>
+            <th style="border: 1px solid black;">Gene Name</th>
+            <th style="border: 1px solid black;">Taxon</th>
+            <th style="border: 1px solid black;">UniprotID</th>
+            <th style="border: 1px solid black;">UniprotAC</th>
             <th style="border: 1px solid black;">E.S. Doc</th>
           </tr>
           <tr *ngFor="let result of mappedIds">
             <td style="padding: 15px;">{{ result.original }}</td>
-            <td style="padding: 15px;">{{ result.mapped?._source.Gene_Name | json }}</td>
-            <td style="padding: 15px;">{{ result.mapped?._source.taxon | json }}</td>
-            <td style="padding: 15px;">{{ result.mapped?._source["UniProtKB-ID"] | json }}</td>
+            <td style="padding: 15px;">{{ result.mapped?._source["Gene_Name"] ? result.mapped?._source["Gene_Name"] : "" }}</td>
+            <td style="padding: 15px;"><a href="https://ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ result.mapped?._source.NCBI_TaxID }}" target="blank">{{ result.mapped?._source.NCBI_TaxID }}</a></td>
+            <td style="padding: 15px;"><a href="https://uniprot.org/uniprot/{{ result.mapped?._source['UniProtKB-ID'] }}" target="blank">{{ result.mapped?._source['UniProtKB-ID'] }}</a></td>
+            <td style="padding: 15px;"><a href="https://uniprot.org/uniprot/{{ result.mapped?._source['UniProtKB-AC'] }}" target="blank">{{ result.mapped?._source['UniProtKB-AC'] }}</a></td>
             <td style="padding: 15px;" *ngIf="result.mapped"><a href="{{ this.idsearch.url + '/id/mapping/_search?q=_id:' + result.mapped._id }}" target="blank">doc</a></td>
-            <td style="padding: 15px;" *ngIf="!result.mapped">-</td>
+            <td style="padding: 15px;" *ngIf="!result.mapped"></td>
           </tr>
 
         </table>

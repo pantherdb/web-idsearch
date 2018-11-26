@@ -29,6 +29,11 @@ export class AppComponent implements OnInit {
 
   onSearchChange(search_query: string) {
     this.$options = this.idsearch.search(search_query);
+    // this.$options.subscribe(data => {
+    //   for(let hit of data.hits.hits) {
+    //   console.log(hit._source);
+    //   }
+    // })
   }
 
 

@@ -12,8 +12,9 @@ import { ESearch, MESearch } from './idsearch';
 })
 export class IdsearchService {
 
-  url = "https://search-panther-eb636tdq5a6sm5oeu7pi5ldtpe.us-west-1.es.amazonaws.com";
-  max_results = 10;
+  // url = "https://search-panther-eb636tdq5a6sm5oeu7pi5ldtpe.us-west-1.es.amazonaws.com";
+  url = "http://localhost:9200";
+  max_results = 30;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -29,7 +30,7 @@ export class IdsearchService {
         continue;
 
       query += "{\"index\" : \"id\"}\n" +
-               "{ \"id\": \"t_search_key_taxon\", \"params\": { \"query_string\": \"" + param.query_string + "\", \"taxon_id\": " + param.taxon_id + "} }\n"
+               "{ \"id\": \"t_search_key_taxon\", \"params\": { \"query_string\": \"" + param.query_string.toLowerCase() + "\", \"taxon_id\": " + param.taxon_id + "} }\n"
     }
     
 //    console.log("idsearch: ", query);
