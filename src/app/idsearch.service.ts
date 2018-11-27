@@ -12,8 +12,8 @@ import { ESearch, MESearch } from './idsearch';
 })
 export class IdsearchService {
 
-  // url = "https://search-panther-eb636tdq5a6sm5oeu7pi5ldtpe.us-west-1.es.amazonaws.com";
-  url = "http://localhost:9200";
+  url = "https://search-panther-eb636tdq5a6sm5oeu7pi5ldtpe.us-west-1.es.amazonaws.com";
+  // url = "http://localhost:9200";
   max_results = 30;
 
   constructor(private httpClient: HttpClient) {}
