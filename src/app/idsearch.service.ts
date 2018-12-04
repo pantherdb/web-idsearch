@@ -11,21 +11,30 @@ import { ESearch, MESearch } from './idsearch';
   providedIn: 'root'
 })
 export class IdsearchService {
-  // url = "https://search-panther-test-bnobkola4aq5kwqv43zv7sc5ky.us-west-1.es.amazonaws.com";
-  // url = "https://search-panther-eb636tdq5a6sm5oeu7pi5ldtpe.us-west-1.es.amazonaws.com";
-  // url = "http://13.52.80.142:9200";
-  // url = "http://localhost:9200";
 
-  // url = "https://search-panther-test-bnobkola4aq5kwqv43zv7sc5ky.us-west-1.es.amazonaws.com";
   url = "https://search.geneontology.cloud";
-  max_results = 30;
+  // url = "http://localhost:9200";
+  max_results = 100;
 
   constructor(private httpClient: HttpClient) {}
 
-  search(value: string): Observable<ESearch> {
-    return this.httpClient.get<ESearch>(this.url + "/id/mapping/_search?q=" + value + "&size=" + this.max_results);
+  /**
+   * Performs a single search (autocomplete) with E.Search using provided keywords
+   * @param keywords : keywords for the search. Spaces between terms are interpreted as AND operations
+   * @param max_results : maximum number of results to return
+   */
+  search(keywords: string, max_results = this.max_results): Observable<ESearch> {
+    let preparedKeys = keywords.trim();
+    if(preparedKeys.indexOf(" ") != -1) {
+      preparedKeys = keywords.split(" ").join(" AND ");
+    }
+    return this.httpClient.get<ESearch>(this.url + "/id/mapping/_search?q=" + preparedKeys + "&size=" + max_results);
   }
 
+  /**
+   * Performs a multiple IDs search using E.Search _msearch on template
+   * @param params : must be an array with each element containing a JSON object with a query_string (the keyword) and a taxon_id field
+   */
   multipleSearch(params) {
     let query = "";
 
@@ -37,8 +46,6 @@ export class IdsearchService {
                "{ \"id\": \"t_search_key_taxon\", \"params\": { \"query_string\": \"" + param.query_string.toLowerCase() + "\", \"taxon_id\": " + param.taxon_id + "} }\n"
     }
     
-  //  console.log("idsearch: ", query);
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -47,6 +54,10 @@ export class IdsearchService {
     return this.httpClient.post<MESearch>(this.url + "/_msearch/template", query, httpOptions);
   }
 
+  /**
+   * FOR TESTS ONLY: testing the elasticsearch.js library
+   * @param params 
+   */
   multipleSearchV2(params) {
     let query = `
     {

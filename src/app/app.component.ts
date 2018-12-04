@@ -45,11 +45,6 @@ export class AppComponent implements OnInit {
 
   onSearchChange(search_query: string) {
     this.$options = this.idsearch.search(search_query);
-    // this.$options.subscribe(data => {
-    //   for(let hit of data.hits.hits) {
-    //   console.log(hit._source);
-    //   }
-    // })
 
     // this.esearch.search(search_query)
     // .then(body => {
@@ -61,10 +56,29 @@ export class AppComponent implements OnInit {
   }
 
 
+  // commonly used organisms: https://www.ncbi.nlm.nih.gov/Taxonomy/taxonomyhome.html/
   taxons = [
-    {value: '9606', viewValue: 'Human'},
-    {value: '10090', viewValue: 'Mouse'},
-    {value: '10116', viewValue: 'Rat'}
+    {value: '3702', viewValue: 'Arabidopsis thaliana'},
+    {value: '1758', viewValue: 'Box taurus'},
+    {value: '6239', viewValue: 'Caenorhabditis elegans'},
+    {value: '3055', viewValue: 'Chlamydomonas reinhardtii'},
+    {value: '7955', viewValue: 'Danio rerio'},
+    {value: '44689', viewValue: 'Dictyostelium discoideum'},
+    {value: '7227', viewValue: 'Drosophila melanogaster'},
+    {value: '562', viewValue: 'Escherichia coli'},
+    {value: '11103', viewValue: 'Hepacivirus C'},
+    {value: '9606', viewValue: 'Homo sapiens'},
+    {value: '10090', viewValue: 'Mus musculus'},
+    {value: '2104', viewValue: 'Mycoplasma pneumoniae'},
+    {value: '4530', viewValue: 'Oryza sativa'},
+    {value: '5833', viewValue: 'Plasmodium falciparum'},
+    {value: '4754', viewValue: 'Pneumocystis carinii'},
+    {value: '10116', viewValue: 'Rattus norvegicus'},
+    {value: '4932', viewValue: 'Saccharomyces cerevisiae'},
+    {value: '4896', viewValue: 'Schizosaccharomyces pombe'},
+    {value: '31033', viewValue: 'Takifugu rubripes'},
+    {value: '8355', viewValue: 'Xenopus laevis'},
+    {value: '4577', viewValue: 'Zea mays'}
   ];
 
   selected_taxon = this.taxons[0];
