@@ -31,16 +31,16 @@ export class AppComponent implements OnInit {
   isConnected: boolean = false;
 
   ngOnInit() {
-    this.esearch.isAvailable().then(() => {
-      this.status = 'OK';
-      this.isConnected = true;
-    }, error => {
-      this.status = 'ERROR';
-      this.isConnected = false;
-      console.error('Server is down', error);
-    }).then(() => {
-      this.cd.detectChanges();
-    });
+    // this.esearch.isAvailable().then(() => {
+    //   this.status = 'OK';
+    //   this.isConnected = true;
+    // }, error => {
+    //   this.status = 'ERROR';
+    //   this.isConnected = false;
+    //   console.error('Server is down', error);
+    // }).then(() => {
+    //   this.cd.detectChanges();
+    // });
   }
 
   onSearchChange(search_query: string) {
