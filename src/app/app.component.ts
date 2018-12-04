@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
 import { IdsearchService } from './idsearch.service';
 import { ESearch, MESearch } from './idsearch';
+import { EsearchService } from './esearch.service';
 
 
 @Component({
@@ -22,9 +23,24 @@ export class AppComponent implements OnInit {
 
   search_query: string;
 
-  constructor(public idsearch : IdsearchService) {}
+  constructor(public idsearch : IdsearchService,
+              private esearch : EsearchService,
+              private cd: ChangeDetectorRef) {}
+
+  status: string = "N/A";
+  isConnected: boolean = false;
 
   ngOnInit() {
+    this.esearch.isAvailable().then(() => {
+      this.status = 'OK';
+      this.isConnected = true;
+    }, error => {
+      this.status = 'ERROR';
+      this.isConnected = false;
+      console.error('Server is down', error);
+    }).then(() => {
+      this.cd.detectChanges();
+    });
   }
 
   onSearchChange(search_query: string) {
@@ -32,6 +48,14 @@ export class AppComponent implements OnInit {
     // this.$options.subscribe(data => {
     //   for(let hit of data.hits.hits) {
     //   console.log(hit._source);
+    //   }
+    // })
+
+    // this.esearch.search(search_query)
+    // .then(body => {
+    //   var hits = body.hits.hits;
+    //   for(let hit of hits) {
+    //     console.log(hit);
     //   }
     // })
   }
@@ -61,6 +85,7 @@ export class AppComponent implements OnInit {
 
     this.idsearch.multipleSearch(params)
     .subscribe(data => {
+      console.log(data);
       this.mappedIds = [];
       for(let i = 0; i < data.responses.length; i++) {
 //        console.log({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
@@ -68,7 +93,33 @@ export class AppComponent implements OnInit {
         this.mappedIds.push({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
       }
     })
-  }
+
+//     let body = "[";
+//     for(let id of ids) {
+//       body += `{ \"index\": \"id\", \"type\": \"mapping\" },
+//                { \"query\": \"` + id + `\" },
+//                ` 
+//     }
+//     body = body.substring(0, body.length - 2);
+//     body += "]";
+
+//     this.esearch.multipleSearch(body)
+//     .then(body => {
+//       console.log(body);
+//     })
+
+// // this.idsearch.multipleSearchV2(params)
+// // .subscribe(data => {
+// //   console.log(data);
+// //   this.mappedIds = [];
+// //   for(let i = 0; i < data.responses.length; i++) {
+// // //        console.log({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
+// //     // we know that we'll have only 1 hit / query
+// //     this.mappedIds.push({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
+// //   }
+// // })
+
+}
 
   nbMapped() {
     let count = 0;

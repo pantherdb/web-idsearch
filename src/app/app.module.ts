@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from '@angular/material/tabs';
 import { IdsearchService } from './idsearch.service';
+import { EsearchService } from './esearch.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { IdsearchService } from './idsearch.service';
     BrowserAnimationsModule
   ],
   providers: [
-    IdsearchService
+    IdsearchService,
+    EsearchService
   ],
   bootstrap: [AppComponent]
 })
