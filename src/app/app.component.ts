@@ -58,6 +58,7 @@ export class AppComponent implements OnInit {
 
   // commonly used organisms: https://www.ncbi.nlm.nih.gov/Taxonomy/taxonomyhome.html/
   taxons = [
+    {value: '9606', viewValue: 'Homo sapiens'},
     {value: '3702', viewValue: 'Arabidopsis thaliana'},
     {value: '1758', viewValue: 'Box taurus'},
     {value: '6239', viewValue: 'Caenorhabditis elegans'},
@@ -89,8 +90,6 @@ export class AppComponent implements OnInit {
 
   mappedIds;
   map(mapids) {
-    // console.log(mapids);
-
     let ids = mapids.split("\n");
     let params = [];
     for(let id of ids) {
@@ -102,8 +101,7 @@ export class AppComponent implements OnInit {
       console.log(data);
       this.mappedIds = [];
       for(let i = 0; i < data.responses.length; i++) {
-//        console.log({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
-        // we know that we'll have only 1 hit / query
+        // we know that we'll have only 1 hit / query with the current template (see pantherdb - idsearch GH repo)
         this.mappedIds.push({ original: ids[i], mapped: data.responses[i].hits.hits[0] });
       }
     })
